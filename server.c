@@ -53,9 +53,33 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
-    valread = read( new_socket , buffer, 1024);
+    pid_t p = fork();
+    if(p==0){
+    printf("In the child\n");
+    int privilegeValue= setuid(65534);
+    if(privilegeValue==-1){
+    printf("Unable to drop the privilege");
+    exit(EXIT_FAILURE);
+    } 
+    valread = read( new_socket , buffer, 1024); 
     printf("%s\n",buffer );
     send(new_socket , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
+    printf("Hello message sent from the child\n");
+    return 0;
+
+    }
+    else if(p>0){
+    wait(200);
+	    printf("In the parent");
+    }
+    else{
+	    
+	    printf("Child couldn't be created");
+    		_Exit(0);
+    }
+    //valread = read( new_socket , buffer, 1024);
+    //printf("%s\n",buffer );
+    //send(new_socket , hello , strlen(hello) , 0 );
+    //printf("Hello message sent\n");
     return 0;
 }
