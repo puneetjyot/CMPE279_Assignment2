@@ -55,19 +55,14 @@ int main(int argc, char const *argv[])
     }
     pid_t p = fork();
     if(p==0){
-    printf("In the child\n");
-    int privilegeValue= setuid(65534);
-    if(privilegeValue==-1){
-    printf("Unable to drop the privilege");
-    exit(EXIT_FAILURE);
+    int execresult=execl("execchild","execchild",&new_socket,hello,NULL);
+	if(execresult<0){
+	printf("Child cant be exec()");
+	}
     } 
-    valread = read( new_socket , buffer, 1024); 
-    printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );
-    printf("Hello message sent from the child\n");
-    return 0;
+    
 
-    }
+    
     else if(p>0){
     wait(200);
 	    printf("In the parent");
